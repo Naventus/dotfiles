@@ -27,12 +27,10 @@ nnoremap k gk
 syntax enable "シンタックスハイライトの有効化
 
 " Tab系
-set list listchars=tab:\▸\- "不可視文字を可視化(タブが「▸-」と表示される)
+"set list listchars=tab:\▸\- "不可視文字を可視化(タブが「▸-」と表示される)
 set expandtab "Tab文字を半角スペースにする
 set tabstop=2 "行頭以外のTab文字の表示幅（スペースいくつ分）
 set shiftwidth=2 "行頭でのTab文字の表示幅
-
-colorscheme desert
 
 let g:netrw_banner = 0 "上部の情報を削除
 let g:netrw_liststyle = 3 "tree view
@@ -43,8 +41,16 @@ let g:netrw_winsize = 85 "分割時に85%で開く
 set autowrite
 
 call plug#begin()
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+  Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+  Plug 'scrooloose/nerdtree'
+  Plug 'morhetz/gruvbox'
 call plug#end()
+
+" nerdtree
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+
+:command Gr $(GO111MODULE=on go run -v ./main.go)
 
 autocmd FileType go nmap <leader>t  <Plug>(go-test)
 autocmd FileType go nmap <leader>b  <Plug>(go-build)
@@ -59,4 +65,11 @@ function! s:build_go_files()
   endif
 endfunction
 
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_function_calls = 1
+
 autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
+
+colorscheme gruvbox
